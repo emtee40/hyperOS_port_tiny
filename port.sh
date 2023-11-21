@@ -142,8 +142,8 @@ patch_apk() {
 PORT_PARTITION=$(grep "partition_to_port" bin/port_config |cut -d '=' -f 2)
 #SUPERLIST=$(grep "super_list" bin/port_config |cut -d '=' -f 2)
 REPACKEXT4=$(grep "repack_with_ext4" bin/port_config |cut -d '=' -f 2)
-# 检查为本地包还是链接
 
+# 检查为本地包还是链接
 if [ ! -f "${BASEROM}" ] && [ "$(echo $BASEROM |grep http)" != "" ];then
     Blue "底包为一个链接，正在尝试下载"
     aria2c --max-download-limit=1024M --file-allocation=none -s10 -x10 -j10 ${BASEROM}
@@ -500,24 +500,8 @@ if [[ -f $targetDevicesAndroidOverlay ]]; then
     rm -rf tmp
 fi
 
-
-
-# 修复NFC
-Blue "正在修复/替换 NFC"
-Yellow "TODO"
-#mi_ext文件复制到product
-#cp -rf build/PORTROM/images/mi_ext/product/overlay/* build/PORTROM/images/product/overlay
-#cp -rf build/PORTROM/images/mi_ext/product/framework/* build/PORTROM/images/product/framework
-#cp -rf build/PORTROM/images/mi_ext/product/etc/permissions/platform-miui-uninstall.xml build/PORTROM/images/product/etc/permissions
-#cat build/PORTROM/images/mi_ext/etc/build.prop >> build/PORTROM/images/product/etc/build.prop
-#pangu移动到system
-#cp -rf build/PORTROM/images/product/pangu/system/* build/PORTROM/images/system/system/ 
-#rm -rf build/PORTROM/images/product/pangu
-
 #检查是否缺少相应的vndk
-
-
-#其他机型可能没有default.prop
+#其他机型可能没有default.prop,查找所有的*.prop
 #vndk_version=$(< build/PORTROM/images/vendor/default.prop grep "ro.vndk.version" | awk "NR==1" | cut -d '=' -f 2)
 for prop_file in $(find build/PORTROM/images/vendor/ -name "*.prop"); do
     vndk_version=$(< "$prop_file" grep "ro.vndk.version" | awk "NR==1" | cut -d '=' -f 2)
@@ -885,6 +869,9 @@ if [ "${baseROMType}" = "br" ];then
     for img in $(find out/hyperos_${deviceCode}_${port_rom_version}/firmware-update -type f -name "vbmeta*.img");do
         python3 bin/patch-vbmeta.py ${img}
     done
+    mkdir -p out/hyperos_${deviceCode}_${port_rom_version}/bin/Windows
+    cp bin/flash/a-only/FlashWindows.bat out/hyperos_${deviceCode}_${port_rom_version}/
+    cp -rf bin/flash/platform-tools-windows/* out/hyperos_${deviceCode}_${port_rom_version}/bin/Windows/
     mv -f build/BASEROM/boot.img out/hyperos_${deviceCode}_${port_rom_version}/boot_official.img
     cp -rf bin/flash/a-only/update-binary out/hyperos_${deviceCode}_${port_rom_version}/META-INF/com/google/android/
     cp -rf bin/flash/zstd out/hyperos_${deviceCode}_${port_rom_version}/META-INF/
