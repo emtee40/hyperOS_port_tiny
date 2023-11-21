@@ -12,28 +12,29 @@
 - HyperOS 一键自动移植打包
 
 ## 测试机型及版本
-- 测试机型小米10 底包 (V14.0.4.0.TJBCNXM)
-- 测试版本 小米14Pro Android 14 OS1.0.09.0.UNBCNXM - OS1.0.20.0.UNBCNXM 官方OTA包
 
+- 测试机型小米10 底包 (V14.0.4.0.TJBCNXM)
+- 测试版本： 当前分支基于小米14Pro基础版和开发版，[fuxi-dev](https://github.com/toraidl/hyperos_port/tree/fuxi-dev)分支基于小米13开发版。
 ## 正常工作
 - 人脸
 - 挖孔
-- 指纹
-- 相机（基础功能）
+- 指纹  
+- NFC
+- 相机（mi10s 4.5版本可用，需自行下载放入device/umi/overlay/product/priv-app/MiuiCamera/MiuiCamera.apk）
 - 自动亮度
 - 通话息屏
 - 应用双开
 - 护眼模式
 - 带壳截屏
 
-
 ## BUG
-- NFC（mi10可刷卡）
 
+- （shennong分支）息屏解锁时，有几率出现闪屏问题，可尝试在开发者选项中开启“**停用HW叠加层**“选项
 - 等你发现
 
 ## 说明
-- 以上均基于小米10正式版(V14.0.4.0.TJBCNXM)测试
+- 以上均基于底包小米10正式版(V14.0.4.0.TJBCNXM)测试
+- 其他机型需要测试修改
 
 ## 如何使用
 - 在WSL、ubuntu、deepin等Linux下
@@ -76,4 +77,7 @@
     tsu
     ./hyperos_port.sh <底包路径> <移植包路径>
 ```
-- 上述代码中，底包路径和移植包路径可以替换为链接
+- 上述代码中，底包路径和移植包路径可以替换为链接，例：
+```shell
+sudo ./hyperos_port.sh https://bigota.d.miui.com/V14.0.4.0.TJBCNXM/miui_UMI_V14.0.4.0.TJBCNXM_23fc5ef4ee_13.0.zip https://bigota.d.miui.com/OS1.0.23.11.13.DEV/miui_SHENNONG_OS1.0.23.11.13.DEV_c776cc46d4_14.0.zip
+```
