@@ -48,7 +48,7 @@
     # 安装依赖
     sudo ./setup.sh
     # 开始移植
-    sudo ./hyperos_port.sh <底包路径> <移植包路径>
+    sudo ./port.sh <底包路径> <移植包路径>
 ```
 - 在macOS下
 ```shell
@@ -61,7 +61,7 @@
     # 安装依赖
     sudo ./setup.sh
     # 开始移植
-    sudo ./hyperos_port.sh <底包路径> <移植包路径>
+    sudo ./port.sh <底包路径> <移植包路径>
 ```
 - 在Termux上(未测试)
 ```shell
@@ -75,9 +75,9 @@
     ./setup.sh
     # 进入root模式
     tsu
-    ./hyperos_port.sh <底包路径> <移植包路径>
+    ./port.sh <底包路径> <移植包路径>
 ```
 - 上述代码中，底包路径和移植包路径可以替换为链接，例：
 ```shell
-sudo ./hyperos_port.sh https://bigota.d.miui.com/V14.0.4.0.TJBCNXM/miui_UMI_V14.0.4.0.TJBCNXM_23fc5ef4ee_13.0.zip https://bigota.d.miui.com/OS1.0.23.11.13.DEV/miui_SHENNONG_OS1.0.23.11.13.DEV_c776cc46d4_14.0.zip
+sudo ./port.sh https://bigota.d.miui.com/V14.0.4.0.TJBCNXM/miui_UMI_V14.0.4.0.TJBCNXM_23fc5ef4ee_13.0.zip https://bigota.d.miui.com/OS1.0.23.11.13.DEV/miui_SHENNONG_OS1.0.23.11.13.DEV_c776cc46d4_14.0.zip
 ```

@@ -43,7 +43,7 @@
     # Install dependencies
     sudo ./setup.sh
     # Start porting
-    sudo ./hyperos_port.sh <baserom> <portrom>
+    sudo ./port.sh <baserom> <portrom>
 ```
 - on macOS (AMD64)
 ```shell
@@ -56,7 +56,7 @@
     # Install dependencies
     sudo ./setup.sh
      # Start porting
-    sudo ./hyperos_port.sh <baserom> <portrom>
+    sudo ./port.sh <baserom> <portrom>
 ```
 - On Termux Android (not tested)
 ```shell
@@ -70,11 +70,11 @@
     ./setup.sh
     # Enter root mode 
     tsu
-    ./hyperos_port.sh <baserom> <portrom>
+    ./port.sh <baserom> <portrom>
 ```
 - baserom and portrom can be a direct download link. you can get the ota download link  from third-party websites. eg:
 ```shell
-    sudo ./hyperos_port.sh https://bigota.d.miui.com/V14.0.4.0.TJBCNXM/miui_UMI_V14.0.4.0.TJBCNXM_23fc5ef4ee_13.0.zip https://bigota.d.miui.com/OS1.0.23.11.13.DEV/miui_SHENNONG_OS1.0.23.11.13.DEV_c776cc46d4_14.0.zip
+    sudo ./port.sh https://bigota.d.miui.com/V14.0.4.0.TJBCNXM/miui_UMI_V14.0.4.0.TJBCNXM_23fc5ef4ee_13.0.zip https://bigota.d.miui.com/OS1.0.23.11.13.DEV/miui_SHENNONG_OS1.0.23.11.13.DEV_c776cc46d4_14.0.zip
 ```
 ## Camera
 - You need to download camera apk from [here](https://drive.google.com/file/d/1igjsEVG7ermqfDObSn3qXDe-QqyPVd61/view?usp=sharing) ,and place it to devices/device_code/overlay/product/priv-app/MiuiCamera/MiuiCamera.apk. 
