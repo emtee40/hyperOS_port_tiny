@@ -38,6 +38,7 @@ Error() {
     else
         echo -e \[$(date +%m%d-%T)\] "\e[1;31m"$@"\e[0m"
     fi
+    exit 1
 }
 
 Yellow() {
@@ -95,20 +96,20 @@ patch_smali() {
             search_pattern=$3
             repalcement_pattern=$4
             sed -i "s/$search_pattern/$repalcement_pattern/g" $targetsmali
-            #rm -rf ${targetfilefullpath}
             Yellow I: Smaling smali_${smalidir} 文件夹回 ${smalidir}.dex
             java -jar bin/apktool/smali.jar a --api ${port_android_sdk} tmp/$foldername/${smalidir} -o tmp/$foldername/${smalidir}.dex
             cd tmp/$foldername/ || exit
-            #macOS上用7z添加文件到apk会提示错误,jar正常
-            #fixme
-            if [ $(uname) = "Darwin" ];then
-                zip -our $targetfilename ${smalidir}.dex
-            else
-                7z a -y -mx0 $targetfilename ${smalidir}.dex
-            fi
+
+            7z a -y -mx0 -tzip $targetfilename ${smalidir}.dex > /dev/null 2>&1
             cd ../../
-            cp -rfv tmp/$foldername/$targetfilename ${targetfilefullpath}
+            zipalign -p -f -v 4 tmp/$foldername/$targetfilename tmp/$foldername/$targetfilename-aligned > /dev/null 2>&1 
+            cp -rfv tmp/$foldername/$targetfilename-aligned ${targetfilefullpath}
             fi
+
+        if [[ $targetfilefullpath == *.apk ]]; then
+            oatdir="$(dirname "$targetfilefullpath")/oat"
+            rm -rf $oatdir
+        fi
     fi
 
 }
@@ -926,5 +927,8 @@ cd ../
 
 hash=$(md5sum hyperos_${deviceCode}_${port_rom_version}.zip |head -c 10)
 mv hyperos_${deviceCode}_${port_rom_version}.zip hyperos_${deviceCode}_${port_rom_version}_${hash}_${port_android_version}_ROOT_${packType}.zip
-Green "移植完毕"    
+Green "移植完毕" 
+if [[ $packType == "EROFS" ]];then
+    Yellow "检测到打包类型为EROFS,请确保内核支持，或者在devices机型目录添加有支持的内核，否者将无法开机！"
+fi
 Green "输出包为 $(pwd)/hyperos_${deviceCode}_${port_rom_version}_${hash}_${port_android_version}_ROOT_${packType}.zip"
