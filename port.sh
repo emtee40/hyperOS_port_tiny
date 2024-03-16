@@ -204,7 +204,7 @@ for part in system system_dlkm system_ext product product_dlkm mi_ext ;do
         elif [[ $(python3 ${work_dir}/bin/gettype.py build/baserom/images/${part}.img) == "erofs" ]]; then
             pack_type=EROFS
             blue "正在分解底包 ${part}.img [erofs]" "Extracing ${part}.img [erofs] from BASEROM"
-            extract.erofs -x -i build/baserom/images/${part}.img  -o build/baserom/images/ > /dev/null 2>&1 || error "分解 ${part}.img 失败" "Extracting ${part}.img failed."
+            extract.erofs -x -i build/baserom/images/${part}.img  -o build/baserom/images/  || error "分解 ${part}.img 失败" "Extracting ${part}.img failed."
             blue "分解底包 [${part}.img][erofs] 完成" "BASEROM ${part}.img [erofs] extracted."
             rm -rf build/baserom/images/${part}.img
         fi
@@ -240,7 +240,7 @@ for part in ${super_list};do
         
         if [[ $(python3 ${work_dir}/bin/gettype.py build/portrom/images/${part}.img) == "ext" ]];then
             pack_type=EXT
-            python3 bin/imgextractor/imgextractor.py build/portrom/images/${part}.img build/portrom/images/ > /dev/null 2>&1 || error "提取${part}失败" "Extracting partition ${part} failed"
+            python3 bin/imgextractor/imgextractor.py build/portrom/images/${part}.img build/portrom/images/ || error "提取${part}失败" "Extracting partition ${part} failed"
             mkdir -p build/portrom/images/${part}/lost+found
             rm -rf build/portrom/images/${part}.img
             green "提取 [${part}] [ext]镜像完毕" "Extracting [${part}].img [ext] done"
@@ -248,7 +248,7 @@ for part in ${super_list};do
             pack_type=EROFS
             green "移植包为 [erofs] 文件系统" "PORTROM filesystem: [erofs]. "
             [ "${repackext4}" = "true" ] && pack_type=EXT
-            extract.erofs -x -i build/portrom/images/${part}.img -o build/portrom/images/ > /dev/null 2>&1 || error "提取${part}失败" "Extracting ${part} failed"
+            extract.erofs -x -i build/portrom/images/${part}.img -o build/portrom/images/  || error "提取${part}失败" "Extracting ${part} failed"
             mkdir -p build/portrom/images/${part}/lost+found
             rm -rf build/portrom/images/${part}.img
             green "提取移植包[${part}] [erofs]镜像完毕" "Extracting ${part} [erofs] done."
@@ -401,13 +401,13 @@ if [[ -f $targetDevicesAndroidOverlay ]]; then
     filename=$(basename $targetDevicesAndroidOverlay)
     yellow "修复息屏和屏下指纹问题" "Fixing AOD issue: $filename ..."
     targetDir=$(echo "$filename" | sed 's/\..*$//')
-    bin/apktool/apktool d $targetDevicesAndroidOverlay -o tmp/$targetDir -f > /dev/null 2>&1
+    bin/apktool/apktool d $targetDevicesAndroidOverlay -o tmp/$targetDir -f
     search_pattern="com\.miui\.aod\/com\.miui\.aod\.doze\.DozeService"
     replacement_pattern="com\.android\.systemui\/com\.android\.systemui\.doze\.DozeService"
     for xml in $(find tmp/$targetDir -type f -name "*.xml");do
         sed -i "s/$search_pattern/$replacement_pattern/g" $xml
     done
-    bin/apktool/apktool b tmp/$targetDir -o tmp/$filename > /dev/null 2>&1 || error "apktool 打包失败" "apktool mod failed"
+    bin/apktool/apktool b tmp/$targetDir -o tmp/$filename || error "apktool 打包失败" "apktool mod failed"
     cp -rf tmp/$filename $targetDevicesAndroidOverlay
     rm -rf tmp
 fi
@@ -429,7 +429,7 @@ if [[ -f $targetAospFrameworkResOverlay ]]; then
         # magic: Change DefaultPeakRefrshRate to 60 
         xmlstarlet ed -L -u "//integer[@name='config_defaultPeakRefreshRate']/text()" -v 60 $xml
     done
-    bin/apktool/apktool b tmp/$targetDir -o tmp/$filename > /dev/null 2>&1 || error "apktool 打包失败" "apktool mod failed"
+    bin/apktool/apktool b tmp/$targetDir -o tmp/$filename  || error "apktool 打包失败" "apktool mod failed"
     cp -rf tmp/$filename $targetAospFrameworkResOverlay
 fi
 
@@ -552,7 +552,7 @@ else
     for smali_dir in "${smali_dirs[@]}"; do
         blue "反编译成功，开始回编译 $smali_dir"
         java -jar bin/apktool/smali.jar a --api ${port_android_sdk} tmp/services/${smali_dir} -o tmp/services/${smali_dir}.dex
-        pushd tmp/services/ > /dev/null 2>&1
+        pushd tmp/services/
         7z a -y -mx0 -tzip services.jar ${smali_dir}.dex
         popd
     done
@@ -797,12 +797,12 @@ if [[ ${port_rom_code} == "dagu_cn" ]];then
         filename=$(basename $targetAospFrameworkTelephonyResOverlay)
         yellow "Enable Phone Call and SMS feature in Pad port."
         targetDir=$(echo "$filename" | sed 's/\..*$//')
-        bin/apktool/apktool d $targetAospFrameworkTelephonyResOverlay -o tmp/$targetDir -f > /dev/null 2>&1
+        bin/apktool/apktool d $targetAospFrameworkTelephonyResOverlay -o tmp/$targetDir -f
         for xml in $(find tmp/$targetDir -type f -name "*.xml");do
             sed -i 's|<bool name="config_sms_capable">false</bool>|<bool name="config_sms_capable">true</bool>|' $xml
             sed -i 's|<bool name="config_voice_capable">false</bool>|<bool name="config_voice_capable">true</bool>|' $xml
         done
-        bin/apktool/apktool b tmp/$targetDir -o tmp/$filename > /dev/null 2>&1 || error "apktool 打包失败" "apktool mod failed"
+        bin/apktool/apktool b tmp/$targetDir -o tmp/$filename || error "apktool 打包失败" "apktool mod failed"
         cp -rf tmp/$filename $targetAospFrameworkTelephonyResOverlay
         #rm -rf tmp
     fi
